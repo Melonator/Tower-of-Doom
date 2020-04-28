@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
- win: circleci/windows@2.4.0
+  win: circleci/windows@2.4.0
 
 jobs:
   build:
@@ -11,8 +11,69 @@ jobs:
       - checkout
       - run: dotnet restore
       - run: dotnet build --no-restore -c Release
-      - run: 
-          name: Pack build result 
-          command: Compress-Archive -Path TowerOfDoom\bin\Release\* -DestinationPath build.zip
-      - store_artifacts: 
-          path: build.zip
+  
+  publish:
+    executor: win/default
+
+    steps:
+      - checkout
+      - run:
+          name: "Install dotnet-zip utility"
+          command: |
+            cd TowerOfDoom
+            dotnet new tool-manifest
+            dotnet tool install dotnet-zip
+            dotnet zip install
+      - run:
+          name: "Create output directory"
+          command: mkdir output
+      - run: dotnet restore
+      - run:
+          name: "Publish to win10-x64"
+          command: |
+            cd TowerOfDoom
+            dotnet zip -r win10-x64 -c Release -o ../output --no-restore
+      - run:
+          name: "Publish to osx.10.11-x64"
+          command: |
+            cd TowerOfDoom
+            dotnet zip -r osx.10.11-x64 -c Release -o ../output --no-restore
+
+      - store_artifacts:
+          path: output
+      - persist_to_workspace:
+          root:  ./
+          paths: output
+
+  draft-to-github:
+    docker:
+      - image: cibuilds/github:0.13
+
+    steps:
+      - attach_workspace:
+          at: ./builds
+      - run:
+          name: "Publish Release on GitHub"
+          command: ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${CIRCLE_TAG} -draft ./builds/
+
+workflows:
+  build-and-draft:
+    jobs:
+      - build:
+          filters:
+            tags:
+              only: /v(\d|[1-9]\d*)\.(\d|[1-9]\d*)\.(\d|[1-9]\d*)(-(0|[1-9A-Za-z-][0-9A-Za-z-]*|[0-9]*[A-Za-z-][0-9A-Za-z-]*)(\.(0|[1-9A-Za-z-][0-9A-Za-z-]*|[0-9]*[A-Za-z-][0-9A-Za-z-]*))*)?(\+[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*)?$/
+      - publish:
+          requires:
+            - build
+          filters:
+            tags:
+              only: /v(\d|[1-9]\d*)\.(\d|[1-9]\d*)\.(\d|[1-9]\d*)(-(0|[1-9A-Za-z-][0-9A-Za-z-]*|[0-9]*[A-Za-z-][0-9A-Za-z-]*)(\.(0|[1-9A-Za-z-][0-9A-Za-z-]*|[0-9]*[A-Za-z-][0-9A-Za-z-]*))*)?(\+[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*)?$/
+      - draft-to-github:
+          requires:
+            - publish
+          filters:
+            tags:
+              only: /v(\d|[1-9]\d*)\.(\d|[1-9]\d*)\.(\d|[1-9]\d*)(-(0|[1-9A-Za-z-][0-9A-Za-z-]*|[0-9]*[A-Za-z-][0-9A-Za-z-]*)(\.(0|[1-9A-Za-z-][0-9A-Za-z-]*|[0-9]*[A-Za-z-][0-9A-Za-z-]*))*)?(\+[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*)?$/
+            branches:
+              ignore: /.*/
