@@ -1,7 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using SadConsole;
-using world;
-using UI;
 
 namespace TowerOfDoom
 {
@@ -10,7 +8,8 @@ namespace TowerOfDoom
 
         public const int GameWidth = 80;
         public const int GameHeight = 25;
-
+        public static int Counter = 0;
+        public static Console MenuScreen;
         // Managers
         public static UIManager UIManager;
         public static World World;
@@ -33,23 +32,26 @@ namespace TowerOfDoom
 
         private static void Update(GameTime time)
         {
-
+            if (Counter == 0)
+            {
+                if (SadConsole.Global.KeyboardState.IsKeyReleased(Microsoft.Xna.Framework.Input.Keys.Enter))
+                {
+                    UIManager = new UIManager();
+                    World = new World();
+                    UIManager.CreateConsoles();
+                    UIManager.Init();
+                    //Couldnt Find a way to separate the update function since its UIManager overrides it
+                    Counter++;
+                    //Clear Menu Screen
+                    MenuScreen.Clear();
+                }
+            }
         }
         private static void Init()
         {
-            //loads font          
-
-
-            UIManager = new UIManager();
-
-            // Build the world!
-            World = new World();
-
-            // Now let the UIManager create its consoles
-            // so they can use the World data
-            UIManager.CreateConsoles();
-            UIManager.Init();
-
+            MenuScreen = new Console(GameWidth, GameHeight);
+            MenuScreen.FillWithRandomGarbage();
+            SadConsole.Global.CurrentScreen = MenuScreen;    
         }
     }
 }

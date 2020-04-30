@@ -1,10 +1,7 @@
 ﻿using SadConsole.Components;
 using Microsoft.Xna.Framework;
-using tiles;
-using mapgeneration;
-using actor;
 
-namespace world
+namespace TowerOfDoom
 {
     // All game state data is stored in World
     // also creates and processes generators

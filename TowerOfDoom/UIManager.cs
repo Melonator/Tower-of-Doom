@@ -1,10 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using SadConsole;
-using actor;
 using TowerOfDoom;
 using System;
 
-namespace UI
+namespace TowerOfDoom
 {
     // Creates/Holds/Destroys all consoles used in the game
     // and makes consoles easily addressable from a central place.

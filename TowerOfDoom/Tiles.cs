@@ -2,7 +2,7 @@
 using SadConsole;
 using Microsoft.Xna.Framework;
 
-namespace tiles
+namespace TowerOfDoom
 {
     public abstract class TileBase : Cell
     {
