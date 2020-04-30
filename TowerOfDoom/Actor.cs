@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 
-namespace actor
+namespace TowerOfDoom
 {
 
     public abstract class Actor : SadConsole.Entities.Entity

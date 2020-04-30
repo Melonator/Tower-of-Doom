@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using tiles;
 using Microsoft.Xna.Framework;
 using System.Linq;
 
-namespace mapgeneration
+namespace TowerOfDoom
 {
     public class Map
     {
@@ -103,19 +102,19 @@ namespace mapgeneration
             //GenerateCorners
             foreach (Point location in UpperLeft)
             {
-                GenerateUpperLeft(location);
+                _map.Tiles[location.ToIndex(_map.Width)] = new TileWall(17, true);
             }
             foreach (Point location in DownLeft)
             {
-                GenerateDownLeft(location);
+                _map.Tiles[location.ToIndex(_map.Width)] = new TileWall(19, true);
             }
             foreach (Point location in UpperRight)
             {
-                GenerateUpperRight(location);
+                _map.Tiles[location.ToIndex(_map.Width)] = new TileWall(16, true);
             }
             foreach (Point location in DownRight)
             {
-                GenerateDownRight(location);
+                _map.Tiles[location.ToIndex(_map.Width)] = new TileWall(18, true);
             }
 
             //Once corners are generated, make the walls
@@ -304,26 +303,6 @@ namespace mapgeneration
                 _map.Tiles[((location.Y - 1) * _map.Width + (location.X))] = new TileWall(11);
             }
         }
-        private void GenerateUpperLeft(Point location)
-        {
-            _map.Tiles[location.ToIndex(_map.Width)] = new TileWall(17, true);
-
-        }
-        private void GenerateDownLeft(Point location)
-        {
-            _map.Tiles[location.ToIndex(_map.Width)] = new TileWall(19, true);
-
-        }
-        private void GenerateUpperRight(Point location)
-        {
-            _map.Tiles[location.ToIndex(_map.Width)] = new TileWall(16, true);
-
-        }
-        private void GenerateDownRight(Point location)
-        {
-            _map.Tiles[location.ToIndex(_map.Width)] = new TileWall(18, true);
-
-        }
         private void StoreVerticalCorners(Point location)
         {
             if (_map.Tiles[((location.Y - 1) * _map.Width + (location.X))].Name == "Floor" &&
@@ -483,7 +462,6 @@ namespace mapgeneration
         }
         private void CreateFloor(Point location)
         {
-            Random randNum = new Random();
             _map.Tiles[location.ToIndex(_map.Width)] = new TileFloor(28);
         }
         private int CheckType(Point location)
@@ -549,7 +527,6 @@ namespace mapgeneration
         }
         private void CreateWall(Point location)
         {
-
             if (location.Y > 1 && location.X > 1)
             {
                 if (CheckType(location) == 1)
