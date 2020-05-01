@@ -38,6 +38,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="Art\MenuScreen.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Fonts\CustomTile.font.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
