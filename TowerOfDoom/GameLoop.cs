@@ -17,7 +17,7 @@ namespace TowerOfDoom
         private static ScrollingConsole startingConsole;
 
         //Menu Image
-        public static DrawImageComponent imageComponent = new DrawImageComponent("MenuScreen.png");
+        public static DrawImageComponent imageComponent = new DrawImageComponent("Art/MenuScreen.png");
 
         static void Main(string[] args)
         {
