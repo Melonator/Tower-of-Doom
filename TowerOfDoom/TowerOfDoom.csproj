@@ -10,10 +10,11 @@
   </PropertyGroup>
 
   <PropertyGroup>
-      <RuntimeIdentifiers>win10-x64;osx.10.11-x64</RuntimeIdentifiers>
+    <RuntimeIdentifiers>win10-x64;osx-x64</RuntimeIdentifiers>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="DotNet.Bundle" Version="0.9.13" />
     <PackageReference Include="GoRogue" Version="2.6.0" />
     <PackageReference Include="MonoGame.Framework.DesktopGL.Core" Version="3.8.0.13" />
     <PackageReference Include="SadConsole" Version="8.99.1" />
@@ -26,6 +27,23 @@
     <None Update="Fonts\CustomTile.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="TowerOfDoom-logo.icns">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
+  <PropertyGroup>
+    <!-- Also defines .app file name -->
+    <CFBundleName>TowerOfDoom</CFBundleName>
+    <CFBundleDisplayName>Tower of Doom</CFBundleDisplayName>
+    <CFBundleIdentifier>com.sitiom.TowerOfDoom</CFBundleIdentifier>
+    <CFBundleVersion>1.0.0</CFBundleVersion>
+    <CFBundlePackageType>AAPL</CFBundlePackageType>
+    <CFBundleSignature>????</CFBundleSignature>
+    <CFBundleExecutable>TowerOfDoom</CFBundleExecutable>
+    <!-- Will be copied from output directory -->
+    <CFBundleIconFile>TowerOfDoom-logo.icns</CFBundleIconFile>
+    <NSPrincipalClass>NSApplication</NSPrincipalClass>
+    <NSHighResolutionCapable>true</NSHighResolutionCapable>
+  </PropertyGroup>
 </Project>
