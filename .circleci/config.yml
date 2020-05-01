@@ -12,7 +12,7 @@ jobs:
       - run: dotnet restore
       - run: dotnet build --no-restore -c Release
   
-  publish:
+  deploy-to-runtimes:
     executor: win/default
 
     steps:
@@ -29,15 +29,15 @@ jobs:
           command: mkdir output
       - run: dotnet restore
       - run:
-          name: "Publish to win10-x64"
+          name: "Build and pack to win10-x64"
           command: |
             cd TowerOfDoom
             dotnet zip -r win10-x64 -c Release -o ../output --no-restore
       - run:
-          name: "Publish to osx.10.11-x64"
+          name: "Bundle to osx-x64 (.app)"
           command: |
-            cd TowerOfDoom
-            dotnet zip -r osx.10.11-x64 -c Release -o ../output --no-restore
+            dotnet msbuild -t:BundleApp -property:Configuration=Release -p:RuntimeIdentifier=osx-x64 -p:CFBundleShortVersionString=1.0.0 -p:OutputPath=osx/
+            Compress-Archive -Path "TowerOfDoom\osx\publish\Tower of Doom.app" -DestinationPath output/TowerOfDoom.osx-x64.zip
 
       - store_artifacts:
           path: output
@@ -64,15 +64,15 @@ workflows:
           filters:
             tags:
               only: /v(\d|[1-9]\d*)\.(\d|[1-9]\d*)\.(\d|[1-9]\d*)(-(0|[1-9A-Za-z-][0-9A-Za-z-]*|[0-9]*[A-Za-z-][0-9A-Za-z-]*)(\.(0|[1-9A-Za-z-][0-9A-Za-z-]*|[0-9]*[A-Za-z-][0-9A-Za-z-]*))*)?(\+[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*)?$/
-      - publish:
+      - deploy-to-runtimes:
           requires:
             - build
           filters:
             tags:
               only: /v(\d|[1-9]\d*)\.(\d|[1-9]\d*)\.(\d|[1-9]\d*)(-(0|[1-9A-Za-z-][0-9A-Za-z-]*|[0-9]*[A-Za-z-][0-9A-Za-z-]*)(\.(0|[1-9A-Za-z-][0-9A-Za-z-]*|[0-9]*[A-Za-z-][0-9A-Za-z-]*))*)?(\+[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*)?$/
-      - draft-to-github:
+      - release-to-github:
           requires:
-            - publish
+            - deploy-to-runtimes
           filters:
             tags:
               only: /v(\d|[1-9]\d*)\.(\d|[1-9]\d*)\.(\d|[1-9]\d*)(-(0|[1-9A-Za-z-][0-9A-Za-z-]*|[0-9]*[A-Za-z-][0-9A-Za-z-]*)(\.(0|[1-9A-Za-z-][0-9A-Za-z-]*|[0-9]*[A-Za-z-][0-9A-Za-z-]*))*)?(\+[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*)?$/
