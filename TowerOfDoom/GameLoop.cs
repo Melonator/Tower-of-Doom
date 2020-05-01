@@ -16,6 +16,9 @@ namespace TowerOfDoom
 
         private static ScrollingConsole startingConsole;
 
+        //Menu Image
+        public static DrawImageComponent imageComponent = new DrawImageComponent("MenuScreen.png");
+
         static void Main(string[] args)
         {
 
@@ -43,14 +46,17 @@ namespace TowerOfDoom
                     //Couldnt Find a way to separate the update function since its UIManager overrides it
                     Counter++;
                     //Clear Menu Screen
+                    MenuScreen.Components.Remove(imageComponent);
                     MenuScreen.Clear();
                 }
             }
         }
         private static void Init()
         {
+            imageComponent.PositionOffset = new Point(1, 1);
+            imageComponent.PositionMode = DrawImageComponent.PositionModes.Pixels;
             MenuScreen = new Console(GameWidth, GameHeight);
-            MenuScreen.FillWithRandomGarbage();
+            MenuScreen.Components.Add(imageComponent);
             SadConsole.Global.CurrentScreen = MenuScreen;    
         }
     }
