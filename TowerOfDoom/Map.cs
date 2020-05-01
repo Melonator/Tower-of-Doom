@@ -7,17 +7,14 @@ namespace TowerOfDoom
 {
     public class Map
     {
-        TileBase[] _tiles;
-        private int _width;
-        private int _height;
+        public TileBase[] Tiles { get; set; }
+        public int Width { get; set; }
+        public int Height { get; set; }
 
-        public TileBase[] Tiles { get { return _tiles; } set { _tiles = value; } }
-        public int Width { get { return _width; } set { _width = value; } }
-        public int Height { get { return _height; } set { _height = value; } }
         public Map(int width, int height)
         {
-            _width = width;
-            _height = height;
+            Width = width;
+            Height = height;
             Tiles = new TileBase[width * height];
         }
 
@@ -27,15 +24,12 @@ namespace TowerOfDoom
             if (location.X < 0 || location.Y < 0 || location.X >= Width || location.Y >= Height)
                 return false;
 
-            return !_tiles[location.Y * Width + location.X].IsBlockingMove;
+            return !Tiles[location.Y * Width + location.X].IsBlockingMove;
         }
     }
 
     public class MapGenerator
     {
-        public MapGenerator()
-        {
-        }
         Map _map;
         List<Point> VerticalPaths = new List<Point>();
         List<Point> HorizontalPaths = new List<Point>();
@@ -48,7 +42,7 @@ namespace TowerOfDoom
         {
             _map = new Map(mapWidth, mapHeight);
             Random randNum = new Random();
-            List<Rectangle> Rooms = new List<Rectangle>();
+            List<Rectangle> rooms = new List<Rectangle>();
 
             for (int i = 0; i < maxRooms; i++)
             {
@@ -58,26 +52,26 @@ namespace TowerOfDoom
                 int newRoomY = randNum.Next(1, mapHeight - newRoomHeight - 1);
 
                 Rectangle newRoom = new Rectangle(newRoomX, newRoomY, newRoomWidth, newRoomHeight);
-                bool newRoomIntersects = Rooms.Any(room => newRoom.Intersects(room));
+                bool newRoomIntersects = rooms.Any(room => newRoom.Intersects(room));
 
                 if (!newRoomIntersects)
                 {
-                    Rooms.Add(newRoom);
+                    rooms.Add(newRoom);
                 }
             }
             FloodWalls();
-            foreach (Rectangle room in Rooms)
+            foreach (Rectangle room in rooms)
             {
                 CreateRoom(room);
             }
-            foreach (Rectangle room in Rooms)
+            foreach (Rectangle room in rooms)
             {
                 BeautifyFloor(room);
             }
-            for (int r = 1; r < Rooms.Count; r++)
+            for (int r = 1; r < rooms.Count; r++)
             {
-                Point previousRoomCenter = Rooms[r - 1].Center;
-                Point currentRoomCenter = Rooms[r].Center;
+                Point previousRoomCenter = rooms[r - 1].Center;
+                Point currentRoomCenter = rooms[r].Center;
                 if (randNum.Next(1, 2) == 1)
                 {
                     CreateHorizontalTunnel(previousRoomCenter.X, currentRoomCenter.X, previousRoomCenter.Y);
@@ -243,13 +237,13 @@ namespace TowerOfDoom
                 _map.Tiles[((location.Y) * _map.Width + (location.X + 1))] = new TileWall(13);
                 _map.Tiles[((location.Y) * _map.Width + (location.X - 1))] = new TileWall(12);
             }
-            else if (_map.Tiles[((location.Y) * _map.Width + (location.X + 1))].IsCorner == true &&
+            else if (_map.Tiles[((location.Y) * _map.Width + (location.X + 1))].IsCorner &&
                       _map.Tiles[((location.Y) * _map.Width + (location.X - 1))].IsCorner != true &&
                     _map.Tiles[((location.Y) * _map.Width + (location.X - 1))].Name == "Wall")
             {
                 _map.Tiles[((location.Y) * _map.Width + (location.X - 1))] = new TileWall(12);
             }
-            else if (_map.Tiles[((location.Y) * _map.Width + (location.X - 1))].IsCorner == true &&
+            else if (_map.Tiles[((location.Y) * _map.Width + (location.X - 1))].IsCorner &&
                      _map.Tiles[((location.Y) * _map.Width + (location.X + 1))].IsCorner != true &&
                      _map.Tiles[((location.Y) * _map.Width + (location.X + 1))].Name == "Wall")
             {
@@ -278,13 +272,13 @@ namespace TowerOfDoom
                 _map.Tiles[((location.Y + 1) * _map.Width + (location.X))] = new TileWall(11);
                 _map.Tiles[((location.Y - 1) * _map.Width + (location.X))] = new TileWall(11);
             }
-            else if (_map.Tiles[((location.Y + 1) * _map.Width + (location.X))].IsCorner == true &&
+            else if (_map.Tiles[((location.Y + 1) * _map.Width + (location.X))].IsCorner &&
                      _map.Tiles[((location.Y - 1) * _map.Width + (location.X))].IsCorner != true &&
                      _map.Tiles[((location.Y - 1) * _map.Width + (location.X))].Name == "Wall")
             {
                 _map.Tiles[((location.Y - 1) * _map.Width + (location.X))] = new TileWall(11);
             }
-            else if (_map.Tiles[((location.Y - 1) * _map.Width + (location.X))].IsCorner == true &&
+            else if (_map.Tiles[((location.Y - 1) * _map.Width + (location.X))].IsCorner &&
                      _map.Tiles[((location.Y + 1) * _map.Width + (location.X))].IsCorner != true &&
                      _map.Tiles[((location.Y + 1) * _map.Width + (location.X))].Name == "Wall")
             {

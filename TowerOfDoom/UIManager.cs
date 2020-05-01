@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using SadConsole;
-using TowerOfDoom;
 using System;
 
 namespace TowerOfDoom
@@ -11,9 +10,9 @@ namespace TowerOfDoom
     {
         public ScrollingConsole MapConsole;
         public Window MapWindow;
-        public MessageLogWindow MessageLog;
-        public SadConsole.FontMaster fontMaster = SadConsole.Global.LoadFont("Fonts/CustomTile.font.json");
-        public SadConsole.Font normalSizedFont = SadConsole.Global.LoadFont("Fonts/CustomTile.font.json").GetFont(SadConsole.Font.FontSizes.One);
+        public MessageLogWindow MessageLog; 
+        public FontMaster FontMaster = Global.LoadFont("Fonts/CustomTile.font.json");
+        public Font NormalSizedFont = Global.LoadFont("Fonts/CustomTile.font.json").GetFont(Font.FontSizes.One);
         public UIManager()
         {
             // must be set to true
@@ -23,7 +22,7 @@ namespace TowerOfDoom
 
             // The UIManager becomes the only
             // screen that SadConsole processes
-            Parent = SadConsole.Global.CurrentScreen;
+            Parent = Global.CurrentScreen;
         }
         public void Init()
         {
@@ -41,7 +40,7 @@ namespace TowerOfDoom
         }
         public void CreateConsoles()
         {
-            MapConsole = new SadConsole.ScrollingConsole(GameLoop.World.CurrentMap.Width, GameLoop.World.CurrentMap.Height, normalSizedFont, new Rectangle(0, 0, GameLoop.GameWidth, GameLoop.GameHeight), GameLoop.World.CurrentMap.Tiles);
+            MapConsole = new ScrollingConsole(GameLoop.World.CurrentMap.Width, GameLoop.World.CurrentMap.Height, NormalSizedFont, new Rectangle(0, 0, GameLoop.GameWidth, GameLoop.GameHeight), GameLoop.World.CurrentMap.Tiles);
         }
 
         public void CenterOnActor(Actor actor)
@@ -58,30 +57,30 @@ namespace TowerOfDoom
 
         private void CheckKeyboard()
         {
-            if (SadConsole.Global.KeyboardState.IsKeyReleased(Microsoft.Xna.Framework.Input.Keys.F5))
+            if (Global.KeyboardState.IsKeyReleased(Microsoft.Xna.Framework.Input.Keys.F5))
             {
-                SadConsole.Settings.ToggleFullScreen();
+                Settings.ToggleFullScreen();
             }
-            if (SadConsole.Global.KeyboardState.IsKeyPressed(Microsoft.Xna.Framework.Input.Keys.Up))
+            if (Global.KeyboardState.IsKeyPressed(Microsoft.Xna.Framework.Input.Keys.Up))
             {
                 GameLoop.World.Player.MoveBy(new Point(0, -1));
                 CenterOnActor(GameLoop.World.Player);
 
             }
-            if (SadConsole.Global.KeyboardState.IsKeyPressed(Microsoft.Xna.Framework.Input.Keys.Down))
+            if (Global.KeyboardState.IsKeyPressed(Microsoft.Xna.Framework.Input.Keys.Down))
             {
                 GameLoop.World.Player.MoveBy(new Point(0, 1));
                 CenterOnActor(GameLoop.World.Player);
 
             }
 
-            if (SadConsole.Global.KeyboardState.IsKeyPressed(Microsoft.Xna.Framework.Input.Keys.Left))
+            if (Global.KeyboardState.IsKeyPressed(Microsoft.Xna.Framework.Input.Keys.Left))
             {
                 GameLoop.World.Player.MoveBy(new Point(-1, 0));
                 CenterOnActor(GameLoop.World.Player);
 
             }
-            if (SadConsole.Global.KeyboardState.IsKeyPressed(Microsoft.Xna.Framework.Input.Keys.Right))
+            if (Global.KeyboardState.IsKeyPressed(Microsoft.Xna.Framework.Input.Keys.Right))
             {
                 GameLoop.World.Player.MoveBy(new Point(1, 0));
                 CenterOnActor(GameLoop.World.Player);
@@ -92,8 +91,10 @@ namespace TowerOfDoom
         public void CreateMapWindow(int width, int height, string title)
         {
 
-            MapWindow = new Window(width, height, SadConsole.Global.FontEmbedded);
-            MapWindow.CanDrag = false;
+            MapWindow = new Window(width, height, Global.FontEmbedded)
+            {
+                CanDrag = false
+            };
             SadConsole.Themes.WindowTheme windowTheme = new SadConsole.Themes.WindowTheme();
             SadConsole.Themes.Library.Default.WindowTheme = windowTheme;
             SadConsole.Themes.Library.Default.Colors.TitleText = Color.White;

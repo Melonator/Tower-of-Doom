@@ -15,7 +15,7 @@ namespace TowerOfDoom
         private int _maxRooms = 50;
         private int _minRoomSize = 10;
         private int _maxRoomSize = 15;
-        public Point spawn;
+        public Point Spawn;
         public Map CurrentMap { get; set; }
         // player data
         public Player Player { get; set; }
@@ -34,8 +34,8 @@ namespace TowerOfDoom
                 {
                     if (CurrentMap.IsTileWalkable(new Point(x, y)) && x > 30 && y > 30)
                     {
-                        spawn.X = x;
-                        spawn.Y = y;
+                        Spawn.X = x;
+                        Spawn.Y = y;
                         break;
                     }
                 }
@@ -58,7 +58,7 @@ namespace TowerOfDoom
             Player = new Player(Color.Transparent, 1);
             Player.Components.Add(new EntityViewSyncComponent());
             SetSpawn();
-            Player.Position = new Point(spawn.X, spawn.Y);
+            Player.Position = new Point(Spawn.X, Spawn.Y);
             // Add the ViewPort sync Component to the player
 
         }

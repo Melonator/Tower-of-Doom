@@ -16,8 +16,8 @@ namespace TowerOfDoom
 
         public DrawImageComponent(string filePath)
         {
-            using (var stream = System.IO.File.OpenRead(filePath))
-                _image = Texture2D.FromStream(SadConsole.Global.GraphicsDevice, stream);
+            using var stream = System.IO.File.OpenRead(filePath);
+            _image = Texture2D.FromStream(Global.GraphicsDevice, stream);
         }
 
         ~DrawImageComponent()
@@ -27,10 +27,11 @@ namespace TowerOfDoom
 
         public override void Draw(Console console, System.TimeSpan delta)
         {
-            if (PositionMode == PositionModes.Cells)
-                SadConsole.Global.DrawCalls.Add(new SadConsole.DrawCalls.DrawCallTexture(_image, (console.CalculatedPosition + console.Font.GetWorldPosition(PositionOffset)).ToVector2()));
-            else
-                SadConsole.Global.DrawCalls.Add(new SadConsole.DrawCalls.DrawCallTexture(_image, (console.CalculatedPosition + PositionOffset).ToVector2()));
+            Global.DrawCalls.Add(PositionMode == PositionModes.Cells
+                ? new SadConsole.DrawCalls.DrawCallTexture(_image,
+                    (console.CalculatedPosition + console.Font.GetWorldPosition(PositionOffset)).ToVector2())
+                : new SadConsole.DrawCalls.DrawCallTexture(_image,
+                    (console.CalculatedPosition + PositionOffset).ToVector2()));
         }
 
         public void Dispose()

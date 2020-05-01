@@ -6,11 +6,8 @@ namespace TowerOfDoom
 
     public abstract class Actor : SadConsole.Entities.Entity
     {
-        private int _health;
-        private int _maxHealth;
-
-        public int Health { get { return _health; } set { _health = value; } }
-        public int MaxHealth { get { return _maxHealth; } set { _maxHealth = value; } }
+        public int Health { get; set; }
+        public int MaxHealth { get; set; }
 
         protected Actor(Color background, Int32 glyph, int width = 1, int height = 1) : base(width, height)
         {
@@ -29,13 +26,12 @@ namespace TowerOfDoom
 
         public bool MoveBy(Point positionChange)
         {
-            if (TowerOfDoom.GameLoop.World.CurrentMap.IsTileWalkable(Position + positionChange))
+            if (GameLoop.World.CurrentMap.IsTileWalkable(Position + positionChange))
             {
                 Position += positionChange;
                 return true;
             }
-            else
-                return false;
+            return false;
         }
         public bool MoveTo(Point newPosition)
         {

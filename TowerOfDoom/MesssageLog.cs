@@ -11,7 +11,7 @@ namespace TowerOfDoom
 
         private readonly Queue<string> _lines;
 
-        private SadConsole.ScrollingConsole _messageConsole;
+        private ScrollingConsole _messageConsole;
 
         private int _windowBorderThickness = 2;
 
@@ -21,9 +21,12 @@ namespace TowerOfDoom
             _lines = new Queue<string>();
             CanDrag = false;
 
-            _messageConsole = new SadConsole.ScrollingConsole(width - _windowBorderThickness, _maxLines, SadConsole.Global.FontEmbedded);
-            _messageConsole.Position = new Point(1, 1);
-            _messageConsole.ViewPort = new Rectangle(0, 0, width / 2, height - _windowBorderThickness);
+            _messageConsole =
+                new ScrollingConsole(width - _windowBorderThickness, _maxLines, Global.FontEmbedded)
+                {
+                    Position = new Point(1, 1),
+                    ViewPort = new Rectangle(0, 0, width / 2, height - _windowBorderThickness)
+                };
 
             Title = title.Align(HorizontalAlignment.Center, Width - 5, (char)32);
 
