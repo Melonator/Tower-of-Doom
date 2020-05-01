@@ -45,7 +45,7 @@ jobs:
           root:  ./
           paths: output
 
-  draft-to-github:
+  release-to-github:
     docker:
       - image: cibuilds/github:0.13
 
@@ -54,11 +54,11 @@ jobs:
           at: .
       - run: ls
       - run:
-          name: "Draft Release on GitHub"
+          name: "Release to GitHub"
           command: ghr -t $GITHUB_TOKEN -u $CIRCLE_PROJECT_USERNAME -r $CIRCLE_PROJECT_REPONAME -c $CIRCLE_SHA1 $CIRCLE_TAG output/
 
 workflows:
-  build-and-draft:
+  build-and-release:
     jobs:
       - build:
           filters:
