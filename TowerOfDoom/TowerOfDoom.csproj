@@ -37,6 +37,7 @@
     <CFBundleName>TowerOfDoom</CFBundleName>
     <CFBundleDisplayName>Tower of Doom</CFBundleDisplayName>
     <CFBundleIdentifier>com.sitiom.TowerOfDoom</CFBundleIdentifier>
+    <CFBundleShortVersionString>1.0.0</CFBundleShortVersionString>
     <CFBundleVersion>1.0.0</CFBundleVersion>
     <CFBundlePackageType>AAPL</CFBundlePackageType>
     <CFBundleSignature>????</CFBundleSignature>

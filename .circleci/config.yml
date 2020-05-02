@@ -36,16 +36,18 @@ jobs:
       - run:
           name: "Bundle to osx-x64 (.app)"
           command: |
-            dotnet msbuild -t:BundleApp -property:Configuration=Release -p:RuntimeIdentifier=osx-x64 -p:CFBundleShortVersionString=1.0.0 -p:OutputPath=osx/
-            Compress-Archive -Path "TowerOfDoom\osx\publish\Tower of Doom.app" -DestinationPath output/TowerOfDoom.osx-x64.zip
-
+            dotnet msbuild -t:BundleApp -property:Configuration=Release -p:RuntimeIdentifier=osx-x64 -p:OutputPath=osx/
+            [xml]$cn = Get-Content TowerOfDoom\TowerOfDoom.csproj
+            if (!([string]::IsNullOrWhiteSpace($cn.Project.PropertyGroup.VersionSuffix))) { $outputPath = "output/TowerOfDoom.$(([string]$cn.Project.PropertyGroup.VersionPrefix).Trim())-$(([string]$cn.Project.PropertyGroup.VersionSuffix).Trim()).osx-x64.zip"}
+            else { $outputPath = "output/TowerOfDoom.$(([string]$cn.Project.PropertyGroup.VersionPrefix).Trim()).osx-x64.zip" }
+            Compress-Archive -Path "TowerOfDoom\osx\publish\Tower of Doom.app" -DestinationPath $outputPath
       - store_artifacts:
           path: output
       - persist_to_workspace:
           root:  ./
           paths: output
 
-  release-to-github:
+  release-on-github:
     docker:
       - image: cibuilds/github:0.13
 
@@ -56,6 +58,17 @@ jobs:
       - run:
           name: "Release to GitHub"
           command: ghr -t $GITHUB_TOKEN -u $CIRCLE_PROJECT_USERNAME -r $CIRCLE_PROJECT_REPONAME -c $CIRCLE_SHA1 $CIRCLE_TAG output/
+  pre-release-on-github:
+    docker:
+      - image: cibuilds/github:0.13
+
+    steps:
+      - attach_workspace:
+          at: .
+      - run: ls
+      - run:
+          name: "Release to GitHub"
+          command: ghr -t $GITHUB_TOKEN -u $CIRCLE_PROJECT_USERNAME -r $CIRCLE_PROJECT_REPONAME -c $CIRCLE_SHA1 -prerelease $CIRCLE_TAG output/
 
 workflows:
   build-and-release:
@@ -70,11 +83,19 @@ workflows:
           filters:
             tags:
               only: /v(\d|[1-9]\d*)\.(\d|[1-9]\d*)\.(\d|[1-9]\d*)(-(0|[1-9A-Za-z-][0-9A-Za-z-]*|[0-9]*[A-Za-z-][0-9A-Za-z-]*)(\.(0|[1-9A-Za-z-][0-9A-Za-z-]*|[0-9]*[A-Za-z-][0-9A-Za-z-]*))*)?(\+[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*)?$/
-      - release-to-github:
+      - pre-release-on-github:
           requires:
             - deploy-to-runtimes
           filters:
             tags:
-              only: /v(\d|[1-9]\d*)\.(\d|[1-9]\d*)\.(\d|[1-9]\d*)(-(0|[1-9A-Za-z-][0-9A-Za-z-]*|[0-9]*[A-Za-z-][0-9A-Za-z-]*)(\.(0|[1-9A-Za-z-][0-9A-Za-z-]*|[0-9]*[A-Za-z-][0-9A-Za-z-]*))*)?(\+[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*)?$/
+              only: /v(\d|[1-9]\d*)\.(\d|[1-9]\d*)\.(\d|[1-9]\d*)(-(0|[1-9A-Za-z-][0-9A-Za-z-]*|[0-9]*[A-Za-z-][0-9A-Za-z-]*)(\.(0|[1-9A-Za-z-][0-9A-Za-z-]*|[0-9]*[A-Za-z-][0-9A-Za-z-]*))*)(\+[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*)?$/
+            branches:
+              ignore: /.*/
+      - release-on-github:
+          requires:
+            - deploy-to-runtimes
+          filters:
+            tags:
+              only: /v(\d|[1-9]\d*)\.(\d|[1-9]\d*)\.(\d|[1-9]\d*)(\+[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*)?$/
             branches:
               ignore: /.*/
