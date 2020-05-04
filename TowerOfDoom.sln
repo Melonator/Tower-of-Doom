@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
-VisualStudioVersion = 16.0.29503.13
+VisualStudioVersion = 16.0.30011.22
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TowerOfDoom", "TowerOfDoom\TowerOfDoom.csproj", "{AA22133B-9F18-49F6-9DBD-E9F37479CC53}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TowerOfDoom", "TowerOfDoom\TowerOfDoom.csproj", "{D0BD7FFC-FE90-49A1-B4BE-80480DE54477}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,15 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{AA22133B-9F18-49F6-9DBD-E9F37479CC53}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AA22133B-9F18-49F6-9DBD-E9F37479CC53}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AA22133B-9F18-49F6-9DBD-E9F37479CC53}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AA22133B-9F18-49F6-9DBD-E9F37479CC53}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D0BD7FFC-FE90-49A1-B4BE-80480DE54477}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0BD7FFC-FE90-49A1-B4BE-80480DE54477}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0BD7FFC-FE90-49A1-B4BE-80480DE54477}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0BD7FFC-FE90-49A1-B4BE-80480DE54477}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {6191220E-FB27-4979-AC9F-B15A9C2064A2}
+		SolutionGuid = {A4B11AF8-53F3-4143-8E89-C488749C6202}
 	EndGlobalSection
 EndGlobal
