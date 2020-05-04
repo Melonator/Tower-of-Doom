@@ -12,7 +12,7 @@ jobs:
       - run: dotnet restore
       - run: dotnet build --no-restore -c Release
   
-  publish:
+  deploy-to-runtimes:
     executor: win/default
 
     steps:
@@ -29,23 +29,25 @@ jobs:
           command: mkdir output
       - run: dotnet restore
       - run:
-          name: "Publish to win10-x64"
+          name: "Build and pack to win10-x64"
           command: |
             cd TowerOfDoom
             dotnet zip -r win10-x64 -c Release -o ../output --no-restore
       - run:
-          name: "Publish to osx.10.11-x64"
+          name: "Bundle to osx-x64 (.app)"
           command: |
-            cd TowerOfDoom
-            dotnet zip -r osx.10.11-x64 -c Release -o ../output --no-restore
-
+            dotnet msbuild -t:BundleApp -property:Configuration=Release -p:RuntimeIdentifier=osx-x64 -p:OutputPath=osx/
+            [xml]$cn = Get-Content TowerOfDoom\TowerOfDoom.csproj
+            if (!([string]::IsNullOrWhiteSpace($cn.Project.PropertyGroup.VersionSuffix))) { $outputPath = "output/TowerOfDoom.$(([string]$cn.Project.PropertyGroup.VersionPrefix).Trim())-$(([string]$cn.Project.PropertyGroup.VersionSuffix).Trim()).osx-x64.zip"}
+            else { $outputPath = "output/TowerOfDoom.$(([string]$cn.Project.PropertyGroup.VersionPrefix).Trim()).osx-x64.zip" }
+            Compress-Archive -Path "TowerOfDoom\osx\publish\Tower of Doom.app" -DestinationPath $outputPath
       - store_artifacts:
           path: output
       - persist_to_workspace:
           root:  ./
           paths: output
 
-  draft-to-github:
+  release-on-github:
     docker:
       - image: cibuilds/github:0.13
 
@@ -54,27 +56,46 @@ jobs:
           at: .
       - run: ls
       - run:
-          name: "Draft Release on GitHub"
+          name: "Release to GitHub"
           command: ghr -t $GITHUB_TOKEN -u $CIRCLE_PROJECT_USERNAME -r $CIRCLE_PROJECT_REPONAME -c $CIRCLE_SHA1 $CIRCLE_TAG output/
+  pre-release-on-github:
+    docker:
+      - image: cibuilds/github:0.13
+
+    steps:
+      - attach_workspace:
+          at: .
+      - run: ls
+      - run:
+          name: "Release to GitHub"
+          command: ghr -t $GITHUB_TOKEN -u $CIRCLE_PROJECT_USERNAME -r $CIRCLE_PROJECT_REPONAME -c $CIRCLE_SHA1 -prerelease $CIRCLE_TAG output/
 
 workflows:
-  build-and-draft:
+  build-and-release:
     jobs:
       - build:
           filters:
             tags:
               only: /v(\d|[1-9]\d*)\.(\d|[1-9]\d*)\.(\d|[1-9]\d*)(-(0|[1-9A-Za-z-][0-9A-Za-z-]*|[0-9]*[A-Za-z-][0-9A-Za-z-]*)(\.(0|[1-9A-Za-z-][0-9A-Za-z-]*|[0-9]*[A-Za-z-][0-9A-Za-z-]*))*)?(\+[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*)?$/
-      - publish:
+      - deploy-to-runtimes:
           requires:
             - build
           filters:
             tags:
               only: /v(\d|[1-9]\d*)\.(\d|[1-9]\d*)\.(\d|[1-9]\d*)(-(0|[1-9A-Za-z-][0-9A-Za-z-]*|[0-9]*[A-Za-z-][0-9A-Za-z-]*)(\.(0|[1-9A-Za-z-][0-9A-Za-z-]*|[0-9]*[A-Za-z-][0-9A-Za-z-]*))*)?(\+[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*)?$/
-      - draft-to-github:
+      - pre-release-on-github:
           requires:
-            - publish
+            - deploy-to-runtimes
           filters:
             tags:
-              only: /v(\d|[1-9]\d*)\.(\d|[1-9]\d*)\.(\d|[1-9]\d*)(-(0|[1-9A-Za-z-][0-9A-Za-z-]*|[0-9]*[A-Za-z-][0-9A-Za-z-]*)(\.(0|[1-9A-Za-z-][0-9A-Za-z-]*|[0-9]*[A-Za-z-][0-9A-Za-z-]*))*)?(\+[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*)?$/
+              only: /v(\d|[1-9]\d*)\.(\d|[1-9]\d*)\.(\d|[1-9]\d*)(-(0|[1-9A-Za-z-][0-9A-Za-z-]*|[0-9]*[A-Za-z-][0-9A-Za-z-]*)(\.(0|[1-9A-Za-z-][0-9A-Za-z-]*|[0-9]*[A-Za-z-][0-9A-Za-z-]*))*)(\+[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*)?$/
+            branches:
+              ignore: /.*/
+      - release-on-github:
+          requires:
+            - deploy-to-runtimes
+          filters:
+            tags:
+              only: /v(\d|[1-9]\d*)\.(\d|[1-9]\d*)\.(\d|[1-9]\d*)(\+[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*)?$/
             branches:
               ignore: /.*/

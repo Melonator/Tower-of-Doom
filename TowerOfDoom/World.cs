@@ -1,7 +1,10 @@
 ﻿using System;
 using TowerOfDoom.Entities;
 using Microsoft.Xna.Framework;
+<<<<<<< HEAD
 using SadConsole.Components;
+=======
+>>>>>>> eaaeadc3173a4681415a4afa4415a6f0067d2627
 
 namespace TowerOfDoom
 {
@@ -17,6 +20,10 @@ namespace TowerOfDoom
         private int _maxRooms = 30;
         private int _minRoomSize = 10;
         private int _maxRoomSize = 15;
+<<<<<<< HEAD
+=======
+        public Point Spawn;
+>>>>>>> eaaeadc3173a4681415a4afa4415a6f0067d2627
         public Map CurrentMap { get; set; }
         public SadConsole.Font normalSizedFont = SadConsole.Global.LoadFont("Fonts/CustomTile.font.json").GetFont(SadConsole.Font.FontSizes.One);
         // player data
@@ -35,10 +42,28 @@ namespace TowerOfDoom
             // spawn a bunch of monsters
             CreateMonsters();
         }
+<<<<<<< HEAD
 
         // Create a new map using the Map class
         // and a map generator. Uses several 
         // parameters to determine geometry
+=======
+        private void SetSpawn()
+        {
+            for (int x = 0; x < _mapTiles.Length; x++)
+            {
+                for (int y = 0; y < _mapTiles.Length; y++)
+                {
+                    if (CurrentMap.IsTileWalkable(new Point(x, y)) && x > 30 && y > 30)
+                    {
+                        Spawn.X = x;
+                        Spawn.Y = y;
+                        break;
+                    }
+                }
+            }
+        }
+>>>>>>> eaaeadc3173a4681415a4afa4415a6f0067d2627
         private void CreateMap()
         {
             _mapTiles = new TileBase[_mapWidth * _mapHeight];
@@ -193,6 +218,7 @@ namespace TowerOfDoom
             SadConsole.Global.FontDefault = normalSizedFont;
             Player = new Player(1);
             Player.Components.Add(new EntityViewSyncComponent());
+<<<<<<< HEAD
             // Place the player on the first non-movement-blocking tile on the map
             for (int i = 0; i < CurrentMap.Tiles.Length; i++)
             {
@@ -203,6 +229,11 @@ namespace TowerOfDoom
                     break;
                 }
             }
+=======
+            SetSpawn();
+            Player.Position = new Point(Spawn.X, Spawn.Y);
+            // Add the ViewPort sync Component to the player
+>>>>>>> eaaeadc3173a4681415a4afa4415a6f0067d2627
 
             // add the player to the global EntityManager's collection of Entities
             CurrentMap.Add(Player);

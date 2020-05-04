@@ -3,10 +3,41 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <VersionPrefix>1.0.0</VersionPrefix>
+  </PropertyGroup>
+  <!-- .app Properties -->
+  <PropertyGroup>
+    <!-- Also defines .app file name -->
+    <CFBundleName>TowerOfDoom</CFBundleName>
+    <CFBundleDisplayName>Tower of Doom</CFBundleDisplayName>
+    <CFBundleIdentifier>com.sitiom.TowerOfDoom</CFBundleIdentifier>
+    <CFBundleShortVersionString>1.0.0</CFBundleShortVersionString>
+    <CFBundleVersion>1.0.0</CFBundleVersion>
+    <CFBundlePackageType>AAPL</CFBundlePackageType>
+    <CFBundleSignature>????</CFBundleSignature>
+    <CFBundleExecutable>TowerOfDoom</CFBundleExecutable>
+    <!-- Will be copied from output directory -->
+    <CFBundleIconFile>TowerOfDoom-logo.icns</CFBundleIconFile>
+    <NSPrincipalClass>NSApplication</NSPrincipalClass>
+    <NSHighResolutionCapable>true</NSHighResolutionCapable>
+  </PropertyGroup>
+
+<<<<<<< HEAD
+  <ItemGroup>
+    <PackageReference Include="GoRogue" Version="2.6.1" />
+=======
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <WarningLevel>0</WarningLevel>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <RuntimeIdentifiers>win10-x64;osx-x64</RuntimeIdentifiers>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="GoRogue" Version="2.6.1" />
+    <PackageReference Include="DotNet.Bundle" Version="0.9.13" />
+    <PackageReference Include="GoRogue" Version="2.6.0" />
+>>>>>>> eaaeadc3173a4681415a4afa4415a6f0067d2627
     <PackageReference Include="MonoGame.Framework.DesktopGL.Core" Version="3.8.0.13" />
     <PackageReference Include="SadConsole" Version="8.99.1" />
   </ItemGroup>
@@ -15,18 +46,29 @@
     <None Update="Art\MenuScreen.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+<<<<<<< HEAD
     <None Update="Art\MenuScreenTutorial.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Art\TowerOfDoom-icon.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+=======
+>>>>>>> eaaeadc3173a4681415a4afa4415a6f0067d2627
     <None Update="Fonts\CustomTile.font.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Fonts\CustomTile.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="TowerOfDoom-logo.icns">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="MenuScreen.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="TheSlayer.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
-
 </Project>
