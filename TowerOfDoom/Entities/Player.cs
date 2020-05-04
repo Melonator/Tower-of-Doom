@@ -11,7 +11,7 @@
             Defense = 12;
             DefenseChance = 10;
             TauntChance = 40;
-            Name = "The Slayer";        
+            Name = "The Slayer";
         }
     }
 }
