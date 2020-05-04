@@ -1,9 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using SadConsole;
 using Console = SadConsole.Console;
 
-namespace TowerOfDoom
+namespace TowerOfDoom.UI
 {
     class DrawImageComponent : SadConsole.Components.DrawConsoleComponent, System.IDisposable
     {
