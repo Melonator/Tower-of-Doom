@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using SadConsole;
+using Console = SadConsole.Console;
 using TowerOfDoom.Entities;
 
 namespace TowerOfDoom.UI
@@ -8,6 +9,8 @@ namespace TowerOfDoom.UI
     public class UIManager : ContainerConsole
     {
         public SadConsole.ScrollingConsole MapConsole;
+        public SadConsole.ScrollingConsole HealthBars;
+
         public MessageLogWindow MessageLog;
         public Window MapWindow;
         public SadConsole.Font normalSizedFont = SadConsole.Global.LoadFont("Fonts/CustomTile.font.json").GetFont(SadConsole.Font.FontSizes.One);
@@ -29,6 +32,9 @@ namespace TowerOfDoom.UI
 
         public override void Update(TimeSpan timeElapsed)
         {
+
+            string hp = "Slayer's HP " + GameLoop.World.Player.Health.ToString("00") + " / " + GameLoop.World.Player.MaxHealth.ToString("00");
+            HealthBars.Print(50, 10, hp);
             CheckKeyboard();
             base.Update(timeElapsed);
         }
@@ -110,6 +116,8 @@ namespace TowerOfDoom.UI
 
         public void CreateMapWindow(int width, int height, string title)
         {
+          
+
             SadConsole.Themes.WindowTheme windowTheme = new SadConsole.Themes.WindowTheme();
             SadConsole.Themes.Library.Default.WindowTheme = windowTheme;
             SadConsole.Themes.Library.Default.Colors.TitleText = Color.White;
@@ -117,20 +125,23 @@ namespace TowerOfDoom.UI
             SadConsole.Themes.Library.Default.Colors.ControlHostBack = Color.Transparent;
 
             MapWindow = new Window(width, height, SadConsole.Global.FontEmbedded);
-            MapWindow.CanDrag = true;
-
-
-            int mapConsoleWidth = width - 2;
-
             var size = new Point(MapWindow.Width, MapWindow.Height).TranslateFont(MapWindow.Font, MapConsole.Font);
+            MapWindow.CanDrag = true;
+            HealthBars = new SadConsole.ScrollingConsole(80, height, SadConsole.Global.FontEmbedded);
+            HealthBars.ViewPort = new Rectangle(width , 0, size.X * 2, size.Y);
+            HealthBars.Position = new Point(width, 1);
+            
+            int mapConsoleWidth = width - 2;
 
             MapConsole.ViewPort = new Rectangle(0, 0, size.X, size.Y);
             MapConsole.Position = new Point(1, 1);
 
             MapWindow.Title = title.Align(HorizontalAlignment.Center, mapConsoleWidth);
+            MapWindow.Children.Add(HealthBars);
             MapWindow.Children.Add(MapConsole);
             Children.Add(MapWindow);
             MapWindow.Show();
+           
         }
     }
 }

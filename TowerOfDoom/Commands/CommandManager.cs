@@ -91,10 +91,9 @@ namespace TowerOfDoom.Commands
             else
             {
                 GameLoop.UIManager.MessageLog.Add($"THE SLAYER RIPS {defender.Name} IN HALF");
-                GameLoop.UIManager.MessageLog.Add($"Plus 18hp, you have {attacker.Health}HP!");
                 ResolveDamage(defender, defender.Health);
                 GameLoop.World.Player.TauntCounter = 0;
-                GameLoop.World.Player.Health += 18;
+                GameLoop.World.Player.Health += 13;
                 if (GameLoop.World.Player.Health > 45)
                 {
                     GameLoop.World.Player.Health = 45;
