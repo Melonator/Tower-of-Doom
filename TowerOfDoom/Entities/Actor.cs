@@ -20,10 +20,13 @@ namespace TowerOfDoom.Entities
         {
             if (GameLoop.World.CurrentMap.IsTileWalkable(Position + positionChange))
             {
+                GameLoop.World.Player.Attacked = false;
                 Monster monster = GameLoop.World.CurrentMap.GetEntityAt<Monster>(Position + positionChange);
+                Player slayer = GameLoop.World.Player;
                 if (monster != null)
                 {
-                    GameLoop.CommandManager.Attack(this, monster);
+                    GameLoop.World.Player.Attacked = true;
+                    GameLoop.CommandManager.Attack(slayer, monster);
                     return true;
                 }
 
@@ -33,9 +36,14 @@ namespace TowerOfDoom.Entities
             else
                 return false;
         }
-        public bool MoveTo(Point newPosition)
+        public bool MoveTo(Point newPosition, bool attack = false)
         {
-            Position = newPosition;
+            Player slayer = GameLoop.World.CurrentMap.GetEntityAt<Player>(newPosition);
+            if(slayer != null && attack)
+            {
+                GameLoop.CommandManager.AttackPlayer(this, slayer);
+            }
+            if (attack == false) Position = newPosition;
             return true;
         }
     }

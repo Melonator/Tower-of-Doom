@@ -3,6 +3,7 @@
     public class Player : Actor
     {
         public int TauntCounter = 0;
+        public bool Attacked = false;
         public Player(int glyph) : base(glyph)
         {
             MaxHealth = 45;

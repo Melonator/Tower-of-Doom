@@ -3,6 +3,9 @@ using Microsoft.Xna.Framework;
 using SadConsole;
 using Console = SadConsole.Console;
 using TowerOfDoom.Entities;
+using GoRogue;
+using GoRogue.Pathing;
+using GoRogue.DiceNotation;
 
 namespace TowerOfDoom.UI
 {
@@ -10,7 +13,6 @@ namespace TowerOfDoom.UI
     {
         public SadConsole.ScrollingConsole MapConsole;
         public SadConsole.ScrollingConsole HealthBars;
-
         public MessageLogWindow MessageLog;
         public Window MapWindow;
         public SadConsole.Font normalSizedFont = SadConsole.Global.LoadFont("Fonts/CustomTile.font.json").GetFont(SadConsole.Font.FontSizes.One);
@@ -41,6 +43,9 @@ namespace TowerOfDoom.UI
         }
         private void CheckKeyboard()
         {
+            var mapView = new GoRogue.MapViews.LambdaMapView<bool>(GameLoop.World.CurrentMap.Width, GameLoop.World.CurrentMap.Height, pos => GameLoop.World.CurrentMap.IsTileWalkable(new Point(pos.X, pos.Y)));
+
+            var AStar = new GoRogue.Pathing.AStar(mapView, Distance.CHEBYSHEV);
 
             if (SadConsole.Global.KeyboardState.IsKeyReleased(Microsoft.Xna.Framework.Input.Keys.F5))
             {
@@ -75,6 +80,28 @@ namespace TowerOfDoom.UI
             {
                 GameLoop.CommandManager.RedoMoveActorBy();
                 CenterOnActor(GameLoop.World.Player);
+            }
+
+            //If the player moved, move the enemy
+            if(SadConsole.Global.KeyboardState.IsKeyPressed(Microsoft.Xna.Framework.Input.Keys.Up) ||
+               SadConsole.Global.KeyboardState.IsKeyPressed(Microsoft.Xna.Framework.Input.Keys.Down) ||
+               SadConsole.Global.KeyboardState.IsKeyPressed(Microsoft.Xna.Framework.Input.Keys.Left) ||
+               SadConsole.Global.KeyboardState.IsKeyPressed(Microsoft.Xna.Framework.Input.Keys.Right))
+            {
+                foreach (Entity monster in GameLoop.World.CurrentMap.Entities.Items)
+                {
+                    if (monster is Monster)
+                    {
+                        Path path = AStar.ShortestPath(monster.Position, GameLoop.World.Player.Position);
+                        if(path.Length < 10 &&
+                           GameLoop.World.CurrentMap.GetEntityAt<Monster>(path.GetStep(0)) == null)
+                        {
+                            int diceOutcome = Dice.Roll("1d100");
+                            if (diceOutcome >= 100 - monster.MoveChance && path.GetStep(0) != GameLoop.World.Player.Position) GameLoop.CommandManager.MoveMonster((Actor)monster, path.GetStep(0));
+                            if (path.GetStep(0) == GameLoop.World.Player.Position && !(GameLoop.World.Player.Attacked)) GameLoop.CommandManager.MoveMonster((Actor)monster, path.GetStep(0), true);
+                        }
+                    }
+                }
             }
         }
         public void Init()
@@ -111,7 +138,7 @@ namespace TowerOfDoom.UI
         }
         private void LoadMap(Map map)
         {
-            MapConsole = new SadConsole.ScrollingConsole(GameLoop.World.CurrentMap.Width, GameLoop.World.CurrentMap.Height, Global.FontDefault, new Rectangle(0, 0, GameLoop.GameWidth, GameLoop.GameHeight), map.Tiles);
+            MapConsole = new SadConsole.ScrollingConsole(GameLoop.World.CurrentMap.Width, GameLoop.World.CurrentMap.Height, Global.FontDefault, new Microsoft.Xna.Framework.Rectangle(0, 0, GameLoop.GameWidth, GameLoop.GameHeight), map.Tiles);
             SyncMapEntities(map);
         }
 
@@ -129,12 +156,12 @@ namespace TowerOfDoom.UI
             var size = new Point(MapWindow.Width, MapWindow.Height).TranslateFont(MapWindow.Font, MapConsole.Font);
             MapWindow.CanDrag = true;
             HealthBars = new SadConsole.ScrollingConsole(80, height, SadConsole.Global.FontEmbedded);
-            HealthBars.ViewPort = new Rectangle(width , 0, size.X * 2, size.Y);
+            HealthBars.ViewPort = new Microsoft.Xna.Framework.Rectangle(width , 0, size.X * 2, size.Y);
             HealthBars.Position = new Point(width, 1);
             
             int mapConsoleWidth = width - 2;
 
-            MapConsole.ViewPort = new Rectangle(0, 0, size.X, size.Y);
+            MapConsole.ViewPort = new Microsoft.Xna.Framework.Rectangle(0, 0, size.X, size.Y);
             MapConsole.Position = new Point(1, 1);
 
             MapWindow.Title = title.Align(HorizontalAlignment.Center, mapConsoleWidth);

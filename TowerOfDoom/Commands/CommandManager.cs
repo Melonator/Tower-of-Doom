@@ -40,7 +40,7 @@ namespace TowerOfDoom.Commands
                     }
                     else if (EnemyMove == 2)
                     {
-                        EnemyBlock = RollForDefend(defender, SlayerDamage, attackMessage);
+                        EnemyBlock = RollForDefend(defender, SlayerDamage);
                         DamageDone = SlayerDamage - EnemyBlock;
                         ResolveDamage(defender, DamageDone);
                     }
@@ -51,7 +51,7 @@ namespace TowerOfDoom.Commands
                 }
                 else if (SlayerMove == 2)
                 {
-                    SlayerBlock = RollForDefend(defender, SlayerDamage, attackMessage);
+                    SlayerBlock = RollForDefend(defender, SlayerDamage);
                     if (EnemyMove == 1)
                     {
                         EnemyDamage = RollForAttack(defender, attacker);
@@ -109,7 +109,15 @@ namespace TowerOfDoom.Commands
 
             GameLoop.UIManager.MessageLog.Add("___________________________");
         }
-
+        public void AttackPlayer(Actor attacker, Actor defender)
+        {
+            GameLoop.UIManager.MessageLog.Add("___________________________");
+            int EnemyHits = RollForAttack(attacker, defender);
+            int SlayerBlocks = RollForDefend(defender, EnemyHits);
+            int DamageDone = EnemyHits - SlayerBlocks;
+            ResolveDamage(defender, DamageDone);
+            GameLoop.UIManager.MessageLog.Add("___________________________");
+        }
         private static int ResolveMove(Actor entity)
         {
             int diceOutcome = Dice.Roll("1d100");
@@ -148,7 +156,7 @@ namespace TowerOfDoom.Commands
 
             return hits;
         }
-        private static int RollForDefend(Actor defender, int hits, StringBuilder attackMessage)
+        private static int RollForDefend(Actor defender, int hits)
         {
             int blocks = 0;
             if (hits > 0)
@@ -198,6 +206,11 @@ namespace TowerOfDoom.Commands
             _lastMoveActorPoint = position;
 
             return actor.MoveBy(position);
+        }
+
+        public bool MoveMonster(Actor actor,  Point position, bool attack = false)
+        {
+            return actor.MoveTo(position, attack);
         }
         public bool RedoMoveActorBy()
         {

@@ -2,7 +2,7 @@
 {
     public class Monster : Actor
     {
-        public Monster(string name, int glyph, int attack, int attackchance, int defense, int defensechance, int tauntchance, int hp) : base(glyph)
+        public Monster(string name, int glyph, int attack, int attackchance, int defense, int defensechance, int tauntchance, int hp, int movechance) : base(glyph)
         {
             Name = name;
             Attack = attack;
@@ -11,6 +11,7 @@
             DefenseChance = defensechance;
             TauntChance = tauntchance;
             Health = hp;
+            MoveChance = movechance;
         }
     }
 }
