@@ -89,15 +89,22 @@ namespace TowerOfDoom.Commands
                 }
             }
             else
-            {
-                GameLoop.UIManager.MessageLog.Add($"THE SLAYER RIPS {defender.Name} IN HALF");
-                ResolveDamage(defender, defender.Health);
-                GameLoop.World.Player.TauntCounter = 0;
-                GameLoop.World.Player.Health += 13;
-                if (GameLoop.World.Player.Health > 45)
+            {            
+                if (defender.Name != "The Marauder")
                 {
-                    GameLoop.World.Player.Health = 45;
+                    GameLoop.UIManager.MessageLog.Add($"THE SLAYER RIPS {defender.Name} IN HALF");
+                    ResolveDamage(defender, defender.Health);
+                    GameLoop.World.Player.Health += 13;
                 }
+                else
+                {
+                    ResolveDamage(defender, 8);
+                    GameLoop.UIManager.MessageLog.Add($"The Slayer fataly injured the marauder!");
+                    GameLoop.UIManager.MessageLog.Add($"The Slayer is partially healed after a glory kill attempt!");
+                    GameLoop.World.Player.Health += 10;
+                }
+                GameLoop.World.Player.TauntCounter = 0;               
+                if (GameLoop.World.Player.Health > 45) GameLoop.World.Player.Health = 45;                                                
             }
 
             GameLoop.UIManager.MessageLog.Add("___________________________");

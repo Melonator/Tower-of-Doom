@@ -32,8 +32,9 @@ namespace TowerOfDoom.UI
 
         public override void Update(TimeSpan timeElapsed)
         {
-
+            string taunts = "Taunt Counter " + GameLoop.World.Player.TauntCounter.ToString("0") + " / 4";
             string hp = "Slayer's HP " + GameLoop.World.Player.Health.ToString("00") + " / " + GameLoop.World.Player.MaxHealth.ToString("00");
+            HealthBars.Print(50, 9, taunts);
             HealthBars.Print(50, 10, hp);
             CheckKeyboard();
             base.Update(timeElapsed);
