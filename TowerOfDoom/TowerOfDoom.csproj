@@ -28,6 +28,7 @@
 
   <PropertyGroup>
     <RuntimeIdentifiers>win10-x64;osx-x64</RuntimeIdentifiers>
+    <ApplicationIcon>Art\TowerOfDoom-icon.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -38,6 +39,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="Art\GameOverScreen.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Art\MenuScreen.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -45,6 +49,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Art\TowerOfDoom-icon.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Art\WinScreen.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Fonts\CustomTile.font.json">

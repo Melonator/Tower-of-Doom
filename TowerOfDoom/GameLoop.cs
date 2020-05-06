@@ -72,7 +72,7 @@ namespace TowerOfDoom
             }
         }
 
-        private static void Init()
+        public static void Init()
         {
             imageComponent.PositionOffset = new Point(1, 1);
             imageComponent.PositionMode = DrawImageComponent.PositionModes.Pixels;

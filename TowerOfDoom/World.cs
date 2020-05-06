@@ -2,6 +2,7 @@
 using TowerOfDoom.Entities;
 using Microsoft.Xna.Framework;
 using SadConsole.Components;
+using System.Collections.Generic;
 
 namespace TowerOfDoom
 {
@@ -34,18 +35,20 @@ namespace TowerOfDoom
         }
         private void CreateMonsters()
         {
+            List<Point> TakenLocation = new List<Point>();
             int impNum = 35;
             Random rndNum = new Random();
             for (int i = 0; i < impNum; i++)
             {
                 int monsterPosition = 0;
-                Monster newMonster = new Monster("An Imp", 2, 5, 25, 3, 50, 25, 10);
+                Monster newMonster = new Monster("An Imp", 2, 4, 25, 3, 50, 25, 12, 20, 9);
                 newMonster.Components.Add(new EntityViewSyncComponent());
-                while (CurrentMap.Tiles[monsterPosition].IsBlockingMove)
+                while (CurrentMap.Tiles[monsterPosition].IsBlockingMove && !(TakenLocation.Contains(new Point(monsterPosition % CurrentMap.Width, monsterPosition / CurrentMap.Width))))
                 {
                     monsterPosition = rndNum.Next(0, CurrentMap.Width * CurrentMap.Height);
                 }
                 newMonster.Position = new Point(monsterPosition % CurrentMap.Width, monsterPosition / CurrentMap.Width);
+                TakenLocation.Add(new Point(monsterPosition % CurrentMap.Width, monsterPosition / CurrentMap.Width));
                 CurrentMap.Add(newMonster);
             }
 
@@ -54,13 +57,14 @@ namespace TowerOfDoom
             for (int i = 0; i < mancubusNum; i++)
             {
                 int monsterPosition = 0;
-                Monster newMonster = new Monster("A Mancubus", 3, 8, 30, 5, 40, 30, 25);
+                Monster newMonster = new Monster("A Mancubus", 3, 9, 30, 5, 40, 30, 25, 20, 7);
                 newMonster.Components.Add(new EntityViewSyncComponent());
-                while (CurrentMap.Tiles[monsterPosition].IsBlockingMove)
+                while (CurrentMap.Tiles[monsterPosition].IsBlockingMove && !(TakenLocation.Contains(new Point(monsterPosition % CurrentMap.Width, monsterPosition / CurrentMap.Width))))
                 {
                     monsterPosition = rndNum2.Next(0, CurrentMap.Width * CurrentMap.Height);
                 }
                 newMonster.Position = new Point(monsterPosition % CurrentMap.Width, monsterPosition / CurrentMap.Width);
+                TakenLocation.Add(new Point(monsterPosition % CurrentMap.Width, monsterPosition / CurrentMap.Width));
                 CurrentMap.Add(newMonster);
             }
 
@@ -70,13 +74,14 @@ namespace TowerOfDoom
             for (int i = 0; i < cacodemonNum; i++)
             {
                 int monsterPosition = 0;
-                Monster newMonster = new Monster("A Cacodemon", 4, 7, 50, 2, 30, 20, 8);
+                Monster newMonster = new Monster("A Cacodemon", 4, 7, 50, 4, 30, 20, 10, 40, 12);
                 newMonster.Components.Add(new EntityViewSyncComponent());
-                while (CurrentMap.Tiles[monsterPosition].IsBlockingMove)
+                while (CurrentMap.Tiles[monsterPosition].IsBlockingMove && !(TakenLocation.Contains(new Point(monsterPosition % CurrentMap.Width, monsterPosition / CurrentMap.Width))))
                 {
                     monsterPosition = rndNum3.Next(0, CurrentMap.Width * CurrentMap.Height);
                 }
                 newMonster.Position = new Point(monsterPosition % CurrentMap.Width, monsterPosition / CurrentMap.Width);
+                TakenLocation.Add(new Point(monsterPosition % CurrentMap.Width, monsterPosition / CurrentMap.Width));
                 CurrentMap.Add(newMonster);
             }
 
@@ -85,13 +90,14 @@ namespace TowerOfDoom
             for (int i = 0; i < pinkyNum; i++)
             {
                 int monsterPosition = 0;
-                Monster newMonster = new Monster("A Pinky", 5, 5, 60, 20, 4, 20, 15);
+                Monster newMonster = new Monster("A Pinky", 5, 3, 60, 20, 4, 20, 15, 80, 15);
                 newMonster.Components.Add(new EntityViewSyncComponent());
-                while (CurrentMap.Tiles[monsterPosition].IsBlockingMove)
+                while (CurrentMap.Tiles[monsterPosition].IsBlockingMove && !(TakenLocation.Contains(new Point(monsterPosition % CurrentMap.Width, monsterPosition / CurrentMap.Width))))
                 {
                     monsterPosition = rndNum4.Next(0, CurrentMap.Width * CurrentMap.Height);
                 }
                 newMonster.Position = new Point(monsterPosition % CurrentMap.Width, monsterPosition / CurrentMap.Width);
+                TakenLocation.Add(new Point(monsterPosition % CurrentMap.Width, monsterPosition / CurrentMap.Width));
                 CurrentMap.Add(newMonster);
             }
 
@@ -100,13 +106,14 @@ namespace TowerOfDoom
             for (int i = 0; i < baronNum; i++)
             {
                 int monsterPosition = 0;
-                Monster newMonster = new Monster("A Baron of Hell", 6, 9, 65, 10, 35, 0, 30);
+                Monster newMonster = new Monster("A Baron of Hell", 6, 8, 65, 10, 35, 0, 25, 20, 11);
                 newMonster.Components.Add(new EntityViewSyncComponent());
-                while (CurrentMap.Tiles[monsterPosition].IsBlockingMove)
+                while (CurrentMap.Tiles[monsterPosition].IsBlockingMove && !(TakenLocation.Contains(new Point(monsterPosition % CurrentMap.Width, monsterPosition / CurrentMap.Width))))
                 {
                     monsterPosition = rndNum5.Next(0, CurrentMap.Width * CurrentMap.Height);
                 }
                 newMonster.Position = new Point(monsterPosition % CurrentMap.Width, monsterPosition / CurrentMap.Width);
+                TakenLocation.Add(new Point(monsterPosition % CurrentMap.Width, monsterPosition / CurrentMap.Width));
                 CurrentMap.Add(newMonster);
             }
 
@@ -115,13 +122,14 @@ namespace TowerOfDoom
             for (int i = 0; i < marauderNum; i++)
             {
                 int monsterPosition = 0;
-                Monster newMonster = new Monster("The Marauder", 7, 15, 50, 5, 50, 0, 45);
+                Monster newMonster = new Monster("The Marauder", 7, 13, 50, 5, 50, 0, 45, 30, 11);
                 newMonster.Components.Add(new EntityViewSyncComponent());
-                while (CurrentMap.Tiles[monsterPosition].IsBlockingMove)
+                while (CurrentMap.Tiles[monsterPosition].IsBlockingMove && !(TakenLocation.Contains(new Point(monsterPosition % CurrentMap.Width, monsterPosition / CurrentMap.Width))))
                 {
                     monsterPosition = rndNum6.Next(0, CurrentMap.Width * CurrentMap.Height);
                 }
                 newMonster.Position = new Point(monsterPosition % CurrentMap.Width, monsterPosition / CurrentMap.Width);
+                TakenLocation.Add(new Point(monsterPosition % CurrentMap.Width, monsterPosition / CurrentMap.Width));
                 CurrentMap.Add(newMonster);
             }
 

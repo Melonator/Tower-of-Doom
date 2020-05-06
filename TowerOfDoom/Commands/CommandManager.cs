@@ -40,7 +40,7 @@ namespace TowerOfDoom.Commands
                     }
                     else if (EnemyMove == 2)
                     {
-                        EnemyBlock = RollForDefend(defender, SlayerDamage, attackMessage);
+                        EnemyBlock = RollForDefend(defender, SlayerDamage);
                         DamageDone = SlayerDamage - EnemyBlock;
                         ResolveDamage(defender, DamageDone);
                     }
@@ -51,7 +51,7 @@ namespace TowerOfDoom.Commands
                 }
                 else if (SlayerMove == 2)
                 {
-                    SlayerBlock = RollForDefend(defender, SlayerDamage, attackMessage);
+                    SlayerBlock = RollForDefend(defender, SlayerDamage);
                     if (EnemyMove == 1)
                     {
                         EnemyDamage = RollForAttack(defender, attacker);
@@ -89,21 +89,35 @@ namespace TowerOfDoom.Commands
                 }
             }
             else
-            {
-                GameLoop.UIManager.MessageLog.Add($"THE SLAYER RIPS {defender.Name} IN HALF");
-                GameLoop.UIManager.MessageLog.Add($"Plus 18hp, you have {attacker.Health}HP!");
-                ResolveDamage(defender, defender.Health);
-                GameLoop.World.Player.TauntCounter = 0;
-                GameLoop.World.Player.Health += 18;
-                if (GameLoop.World.Player.Health > 45)
+            {            
+                if (defender.Name != "The Marauder")
                 {
-                    GameLoop.World.Player.Health = 45;
+                    GameLoop.UIManager.MessageLog.Add($"THE SLAYER RIPS {defender.Name} IN HALF");
+                    ResolveDamage(defender, defender.Health);
+                    GameLoop.World.Player.Health += 18;
                 }
+                else
+                {
+                    ResolveDamage(defender, 8);
+                    GameLoop.UIManager.MessageLog.Add($"The Slayer fataly injured the marauder!");
+                    GameLoop.UIManager.MessageLog.Add($"The Slayer is partially healed after a glory kill attempt!");
+                    GameLoop.World.Player.Health += 15;
+                }
+                GameLoop.World.Player.TauntCounter = 0;               
+                if (GameLoop.World.Player.Health > 45) GameLoop.World.Player.Health = 45;                                                
             }
 
             GameLoop.UIManager.MessageLog.Add("___________________________");
         }
-
+        public void AttackPlayer(Actor attacker, Actor defender)
+        {
+            GameLoop.UIManager.MessageLog.Add("___________________________");
+            int EnemyHits = RollForAttack(attacker, defender);
+            int SlayerBlocks = RollForDefend(defender, EnemyHits);
+            int DamageDone = EnemyHits - SlayerBlocks;
+            ResolveDamage(defender, DamageDone);
+            GameLoop.UIManager.MessageLog.Add("___________________________");
+        }
         private static int ResolveMove(Actor entity)
         {
             int diceOutcome = Dice.Roll("1d100");
@@ -142,7 +156,7 @@ namespace TowerOfDoom.Commands
 
             return hits;
         }
-        private static int RollForDefend(Actor defender, int hits, StringBuilder attackMessage)
+        private static int RollForDefend(Actor defender, int hits)
         {
             int blocks = 0;
             if (hits > 0)
@@ -180,10 +194,13 @@ namespace TowerOfDoom.Commands
             if (defender is Player)
             {
                 GameLoop.UIManager.MessageLog.Add($" {defender.Name} was killed.");
+                GameLoop.World.Player.ShowDeathScreen();
             }
             else if (defender is Monster)
             {
                 GameLoop.UIManager.MessageLog.Add($"{defender.Name} died");
+                if (defender.Name == "The Marauder") GameLoop.World.Player.MarauderKills++;
+                if (GameLoop.World.Player.MarauderKills == 2) GameLoop.World.Player.ShowWinScreen();
             }
         }
         public bool MoveActorBy(Actor actor, Point position)
@@ -192,6 +209,11 @@ namespace TowerOfDoom.Commands
             _lastMoveActorPoint = position;
 
             return actor.MoveBy(position);
+        }
+
+        public bool MoveMonster(Actor actor,  Point position, bool attack = false)
+        {
+            return actor.MoveTo(position, attack);
         }
         public bool RedoMoveActorBy()
         {
