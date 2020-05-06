@@ -94,14 +94,14 @@ namespace TowerOfDoom.Commands
                 {
                     GameLoop.UIManager.MessageLog.Add($"THE SLAYER RIPS {defender.Name} IN HALF");
                     ResolveDamage(defender, defender.Health);
-                    GameLoop.World.Player.Health += 13;
+                    GameLoop.World.Player.Health += 18;
                 }
                 else
                 {
                     ResolveDamage(defender, 8);
                     GameLoop.UIManager.MessageLog.Add($"The Slayer fataly injured the marauder!");
                     GameLoop.UIManager.MessageLog.Add($"The Slayer is partially healed after a glory kill attempt!");
-                    GameLoop.World.Player.Health += 10;
+                    GameLoop.World.Player.Health += 15;
                 }
                 GameLoop.World.Player.TauntCounter = 0;               
                 if (GameLoop.World.Player.Health > 45) GameLoop.World.Player.Health = 45;                                                
@@ -194,10 +194,13 @@ namespace TowerOfDoom.Commands
             if (defender is Player)
             {
                 GameLoop.UIManager.MessageLog.Add($" {defender.Name} was killed.");
+                GameLoop.World.Player.ShowDeathScreen();
             }
             else if (defender is Monster)
             {
                 GameLoop.UIManager.MessageLog.Add($"{defender.Name} died");
+                if (defender.Name == "The Marauder") GameLoop.World.Player.MarauderKills++;
+                if (GameLoop.World.Player.MarauderKills == 2) GameLoop.World.Player.ShowWinScreen();
             }
         }
         public bool MoveActorBy(Actor actor, Point position)

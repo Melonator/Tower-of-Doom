@@ -93,12 +93,12 @@ namespace TowerOfDoom.UI
                     if (monster is Monster)
                     {
                         Path path = AStar.ShortestPath(monster.Position, GameLoop.World.Player.Position);
-                        if(path.Length < 10 &&
+                        if(path.Length < monster.VisibleRange &&
                            GameLoop.World.CurrentMap.GetEntityAt<Monster>(path.GetStep(0)) == null)
                         {
                             int diceOutcome = Dice.Roll("1d100");
                             if (diceOutcome >= 100 - monster.MoveChance && path.GetStep(0) != GameLoop.World.Player.Position) GameLoop.CommandManager.MoveMonster((Actor)monster, path.GetStep(0));
-                            if (path.GetStep(0) == GameLoop.World.Player.Position && !(GameLoop.World.Player.Attacked)) GameLoop.CommandManager.MoveMonster((Actor)monster, path.GetStep(0), true);
+                            if (path.GetStep(0) == GameLoop.World.Player.Position && !(GameLoop.World.Player.Attacked) && diceOutcome >= 50) GameLoop.CommandManager.MoveMonster((Actor)monster, path.GetStep(0), true);
                         }
                     }
                 }
